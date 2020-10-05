@@ -43,11 +43,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private int endringer;         // antall endringer i listen
 
     public DobbeltLenketListe() {
-        //throw new UnsupportedOperationException();
     }
 
     public DobbeltLenketListe(T[] a) {
-        throw new UnsupportedOperationException();
+        if(a == null){
+            throw new NullPointerException("Tabellen a er null");
+        }
     }
 
     public Liste<T> subliste(int fra, int til){
@@ -60,6 +61,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(hode == null){
             return 0;
         }
+        //Loop gjennom for å finne antall
+        return antall;
     }
 
     @Override
