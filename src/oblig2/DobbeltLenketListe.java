@@ -4,13 +4,8 @@ package oblig2;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.NoSuchElementException;
-import java.util.StringJoiner;
+import java.util.*;
 
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 
@@ -41,13 +36,33 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private Node<T> hale;          // peker til den siste i listen
     private int antall;            // antall noder i listen
     private int endringer;         // antall endringer i listen
+    private ArrayList<Node <T>> innerList;
 
     public DobbeltLenketListe() {
     }
 
     public DobbeltLenketListe(T[] a) {
-        if(a == null){
-            throw new NullPointerException("Tabellen a er null");
+        if(a==null){
+            throw new NullPointerException("Tabellen a er null!");
+        }
+        innerList = new ArrayList<Node<T>>();
+
+        Node<T> node = null;
+        for(int i = 0;i<a.length;i++){
+            if(a[i] == null){
+                continue;
+            }
+            node = new Node<>(a[i]);
+            antall++;
+            innerList.add(node);
+            if(i==0){
+                hode = node;
+            }
+            else if(i>0 && i < a.length){
+                node.forrige=hale;
+                hale.neste=node;
+            }
+            hale=node;
         }
     }
 
@@ -57,21 +72,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int antall() {
-        int antall = 0;
-        if(hode == null){
-            return 0;
-        }
-        //Loop gjennom for å finne antall
-        return antall;
+        return innerList.size();
     }
 
     @Override
     public boolean tom() {
-        if(hode == null){
-            return true;
-        }else{
-            return false;
-        }
+        return innerList.size()==0;
     }
 
     @Override
