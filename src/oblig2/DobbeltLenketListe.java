@@ -29,6 +29,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         private Node(T verdi) {
             this(verdi, null, null);
         }
+
+        @Override
+        public String toString() {
+            return verdi.toString();
+        }
     }
 
     // instansvariabler
@@ -39,6 +44,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private ArrayList<Node <T>> innerList;
 
     public DobbeltLenketListe() {
+        innerList = new ArrayList<Node<T>>();
     }
 
     public DobbeltLenketListe(T[] a) {
@@ -46,8 +52,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new NullPointerException("Tabellen a er null!");
         }
         innerList = new ArrayList<Node<T>>();
-
         Node<T> node = null;
+
         for(int i = 0;i<a.length;i++){
             if(a[i] == null){
                 continue;
@@ -55,10 +61,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             node = new Node<>(a[i]);
             antall++;
             innerList.add(node);
-            if(i==0){
+            if(innerList.size()==1){
                 hode = node;
             }
-            else if(i>0 && i < a.length){
+            else if(innerList.size()>1){
                 node.forrige=hale;
                 hale.neste=node;
             }
@@ -127,11 +133,33 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        Node<T> current = hode;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        while(current!=null){
+            sb.append(current.toString()+", ");
+            current=current.neste;
+        }
+        if(sb.length()>2){
+            sb.delete(sb.length()-2,sb.length());
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     public String omvendtString() {
-        throw new UnsupportedOperationException();
+        Node<T> current = hale;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        while(current!=null){
+            sb.append(current.toString()+", ");
+            current=current.forrige;
+        }
+        if(sb.length()>2){
+            sb.delete(sb.length()-2,sb.length());
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
