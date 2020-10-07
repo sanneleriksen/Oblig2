@@ -72,8 +72,27 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
     }
 
+    private Node<T> finnNode(int indeks){
+        Node<T> current = null;
+        if(indeks < antall/2){
+            current = hode;
+            // Begynn på hodet, .neste gjennom
+            for(int i=0;i<indeks;i++){
+                current=current.neste;
+            }
+        }else{
+            current = hale;
+            // Begynn på hale, .forrige gjennom
+            for(int i=antall-1;i>indeks;i--){
+                current=current.forrige;
+            }
+        }
+        return current;
+    }
+
     public Liste<T> subliste(int fra, int til){
-        throw new UnsupportedOperationException();
+        //Lag LL som itererer fra int fra til int til.
+        return null;
     }
 
     @Override
@@ -120,7 +139,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks, false);
+        T hentetNode= (T) finnNode(indeks).verdi;
+        return hentetNode;
     }
 
     @Override
@@ -130,7 +151,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
-        throw new UnsupportedOperationException();
+        if(nyverdi==null){
+            throw new NullPointerException("nyverdi er null!");
+        }
+        T gammelVerdi = hent(indeks);
+        finnNode(indeks).verdi = nyverdi;
+        endringer++;
+        return gammelVerdi;
     }
 
     @Override
