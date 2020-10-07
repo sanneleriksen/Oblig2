@@ -74,6 +74,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     private Node<T> finnNode(int indeks){
         Node<T> current = null;
+        if(antall == 1 && indeks == 0) return hode;
         if(indeks < antall/2){
             current = hode;
             // Begynn på hodet, .neste gjennom
@@ -83,7 +84,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }else{
             current = hale;
             // Begynn på hale, .forrige gjennom
-            for(int i=antall-1;i>indeks;i--){
+            for(int i=antall;i>indeks;i--){
                 current=current.forrige;
             }
         }
@@ -91,8 +92,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Liste<T> subliste(int fra, int til){
-        //Lag LL som itererer fra int fra til int til.
-        return null;
+        DobbeltLenketListe<T> returnList = new DobbeltLenketListe<T>();
+        for(var i = fra; i<til; i++) {
+            var node = finnNode(i);
+            returnList.leggInn(node.verdi);
+        }
+        return returnList;
     }
 
     @Override
@@ -112,6 +117,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(innerList.size()==0){
             node = new Node<>(Objects.requireNonNull(verdi));
             hode=node;
+            antall++;
             innerList.add(node);
         }
         else if(innerList.size()>0){
@@ -119,6 +125,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 current=current.neste;
             }
             node = new Node<>(Objects.requireNonNull(verdi));
+            antall++;
             innerList.add(node);
             node.forrige=current;
             current.neste=node;
@@ -140,8 +147,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public T hent(int indeks) {
         indeksKontroll(indeks, false);
-        T hentetNode= (T) finnNode(indeks).verdi;
-        return hentetNode;
+        Node<T> hentetNode= finnNode(indeks);
+        return hentetNode.verdi;
     }
 
     @Override
