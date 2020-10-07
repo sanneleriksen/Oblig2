@@ -101,6 +101,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
             node = new Node<>(Objects.requireNonNull(verdi));
             innerList.add(node);
+            node.forrige=current;
             current.neste=node;
         }
         hale = node;
