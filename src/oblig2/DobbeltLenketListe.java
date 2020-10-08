@@ -73,29 +73,45 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     private Node<T> finnNode(int indeks){
+        if(indeks>=antall){
+            throw new IndexOutOfBoundsException("indeks er høyere ann antall noder!");
+        }
         Node<T> current = null;
         if(antall == 1 && indeks == 0) return hode;
         if(indeks < antall/2){
-            current = hode;
             // Begynn på hodet, .neste gjennom
-            for(int i=0;i<indeks;i++){
-                current=current.neste;
+            for(int i=-1;i<indeks;i++){
+                if(i == -1) {
+                    current = hode;
+
+                }else{
+                    current=current.neste;
+                }
             }
         }else{
-            current = hale;
             // Begynn på hale, .forrige gjennom
             for(int i=antall;i>indeks;i--){
-                current=current.forrige;
+                if(i == antall){
+                    current = hale;
+                }else{
+                    current=current.forrige;
+                }
             }
         }
         return current;
     }
 
     public Liste<T> subliste(int fra, int til){
+        if (fra > til) {
+            throw new IllegalArgumentException ("fra kan ikke være større enn til.");
+        } else if (fra < 0 || til < 0 || fra > antall || til > antall) {
+            throw new IndexOutOfBoundsException("Ugyldig(e) indeks(er)");
+        }
         DobbeltLenketListe<T> returnList = new DobbeltLenketListe<T>();
-        for(var i = fra; i<til; i++) {
-            var node = finnNode(i);
-            returnList.leggInn(node.verdi);
+        Node<T> node = null;
+        for(int i=fra; i<til; i++) {
+            node = finnNode(i);
+            returnList.leggInn((T) node);
         }
         return returnList;
     }
@@ -158,6 +174,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
+        if(indeks > antall){
+            throw new IndexOutOfBoundsException("indeks er høyere enn antall!");
+        }
         if(nyverdi==null){
             throw new NullPointerException("nyverdi er null!");
         }
