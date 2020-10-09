@@ -219,11 +219,29 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        return false; //wip
+        Node<T> forrigeNode = null;
+        Node<T> node = hode;
+
+        while(!(node.neste.verdi ==verdi)){
+            forrigeNode = node;
+            node = node.neste;
+            if(node==null){
+                return false;
+            }
+        }
+        forrigeNode.neste = node.neste;
+        node.neste.forrige = forrigeNode;
+        node.forrige = null;
+        node.neste = null;
+        antall--;
+        return true;
     }
 
     @Override
     public T fjern(int indeks) {
+        if(indeks>=antall || indeks<0){
+            throw new IndexOutOfBoundsException("indeks er ugyldig");
+        }
         T mellomLagring = hent(indeks);
         finnNode(indeks-1).neste = finnNode(indeks+1);
         antall--;
