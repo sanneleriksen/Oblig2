@@ -321,7 +321,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks){
-            throw new UnsupportedOperationException();
+            denne = hode;     // p starter på den første i listen
+
+            int teller = 0;
+            while(teller<indeks){
+                denne=denne.neste;
+            }
+
+            fjernOK = false;  // blir sann når next() kalles
+            iteratorendringer = endringer;  // teller endringer
         }
 
         @Override
