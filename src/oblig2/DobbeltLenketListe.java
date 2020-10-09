@@ -222,19 +222,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node<T> forrigeNode = null;
         Node<T> node = hode;
 
-        while(!(node.neste.verdi ==verdi)){
+        while(node.neste!=null){
             forrigeNode = node;
             node = node.neste;
-            if(node==null){
+            if(verdi == null){
                 return false;
             }
+            if(node.verdi.equals(verdi)){
+                forrigeNode.neste = node.neste;
+                node.forrige = forrigeNode;
+                antall--;
+                return true;
+            }
         }
-        forrigeNode.neste = node.neste;
-        node.neste.forrige = forrigeNode;
-        node.forrige = null;
-        node.neste = null;
-        antall--;
-        return true;
+        return false;
     }
 
     @Override
@@ -244,19 +245,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
         T mellomLagring = hent(indeks);
         if (indeks == 0){
-            finnNode(indeks).neste = null;
-            if(antall>2){
-                finnNode(indeks+1).forrige = null;
-            }
+            hode=finnNode(1);
+            hode.neste=finnNode(1);
+            finnNode(0).neste = null;
+            finnNode(0).forrige = null;
         }
-        if(indeks == antall-1){
-            finnNode(indeks).forrige=null;
+        else if(indeks == antall-1){
             finnNode(indeks-1).neste=null;
+            finnNode(indeks).forrige=null;
+            hale = finnNode(antall-1);
         }
         else{
-            finnNode(indeks-1).neste = finnNode(indeks+1);
+            finnNode(indeks-1).neste=finnNode(indeks+1);
+            finnNode(indeks).forrige=finnNode(indeks-1);
         }
-
         antall--;
         return mellomLagring;
     }
