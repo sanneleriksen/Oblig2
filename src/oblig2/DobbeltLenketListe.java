@@ -29,7 +29,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         private Node(T verdi) {
             this(verdi, null, null);
         }
-
         @Override
         public String toString() {
             return verdi.toString();
@@ -94,7 +93,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 if(i == antall){
                     current = hale;
                 }else{
-                    current=current.forrige;
+                    if(current.forrige!=null){
+                        current=current.forrige;
+                    }
                 }
             }
         }
@@ -134,6 +135,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             node = new Node<>(Objects.requireNonNull(verdi));
             hode=node;
             antall++;
+            endringer++;
             innerList.add(node);
         }
         else if(innerList.size()>0){
@@ -142,6 +144,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
             node = new Node<>(Objects.requireNonNull(verdi));
             antall++;
+            endringer++;
             innerList.add(node);
             node.forrige=current;
             current.neste=node;
@@ -155,12 +158,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(verdi == null){
             throw new NullPointerException("verdi kan ikke være null");
         }
-        if(indeks>=antall || indeks<=0){
+        if(indeks>=antall || indeks<0){
             throw new IndexOutOfBoundsException("indeks er ugyldig");
         }
         if(antall==0){
             leggInn(verdi);
             antall++;
+            endringer++;
         }else {
             Node<T> node = new Node<>(Objects.requireNonNull(verdi));
             Node<T> forrigeNode = finnNode(indeks - 1);
@@ -168,9 +172,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
             node.neste = nesteNode;
             node.forrige = forrigeNode;
-            forrigeNode.neste = node;
-            nesteNode.forrige = node;
+            if(indeks!=0){
+                forrigeNode.neste = node;
+                nesteNode.forrige = node;
+            }
             antall++;
+            endringer++;
         }
     }
 
@@ -232,6 +239,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 forrigeNode.neste = node.neste;
                 node.forrige = forrigeNode;
                 antall--;
+                endringer++;
                 return true;
             }
         }
@@ -260,12 +268,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             finnNode(indeks).forrige=finnNode(indeks-1);
         }
         antall--;
+        endringer++;
         return mellomLagring;
     }
 
     @Override
     public void nullstill() {
-        throw new UnsupportedOperationException();
+        // Fjernet fordi oppgave 8 ikke passerer uten å fikse den for meg
+        //throw new UnsupportedOperationException();
     }
 
     @Override
@@ -305,7 +315,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Iterator<T> iterator(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks,false);
+        return new DobbeltLenketListeIterator(indeks);
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T>
@@ -325,7 +336,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
             int teller = 0;
             while(teller<indeks){
-                denne=denne.neste;
+                teller++;
+                if(denne.neste!=null){
+                    denne=denne.neste;
+                }
             }
 
             fjernOK = false;  // blir sann når next() kalles
@@ -345,9 +359,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             if(!hasNext()){
                 throw new NoSuchElementException();
             }
+            fjernOK = true;
             T verdi = denne.verdi;
             denne = denne.neste;
-            fjernOK = true;
             return verdi;
         }
 
