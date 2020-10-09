@@ -243,7 +243,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new IndexOutOfBoundsException("indeks er ugyldig");
         }
         T mellomLagring = hent(indeks);
-        finnNode(indeks-1).neste = finnNode(indeks+1);
+        if (indeks == 0){
+            finnNode(indeks).neste = null;
+            if(antall>2){
+                finnNode(indeks+1).forrige = null;
+            }
+        }
+        if(indeks == antall-1){
+            finnNode(indeks).forrige=null;
+            finnNode(indeks-1).neste=null;
+        }
+        else{
+            finnNode(indeks-1).neste = finnNode(indeks+1);
+        }
+
         antall--;
         return mellomLagring;
     }
