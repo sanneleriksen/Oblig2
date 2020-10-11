@@ -155,6 +155,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public void leggInn(int indeks, T verdi) {
+        Node<T> node = new Node<>(Objects.requireNonNull(verdi));
         if(verdi == null){
             throw new NullPointerException("verdi kan ikke være null");
         }
@@ -163,10 +164,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
         if(antall==0){
             leggInn(verdi);
-            antall++;
-            endringer++;
         }else {
-            Node<T> node = new Node<>(Objects.requireNonNull(verdi));
+
             Node<T> forrigeNode = finnNode(indeks - 1);
             Node<T> nesteNode = finnNode(indeks + 1);
 
@@ -176,9 +175,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 forrigeNode.neste = node;
                 nesteNode.forrige = node;
             }
-            antall++;
-            endringer++;
         }
+        antall++;
+        endringer++;
+        innerList.add(node);
     }
 
     @Override
@@ -239,6 +239,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 forrigeNode.neste = node.neste;
                 node.forrige = forrigeNode;
                 antall--;
+                innerList.remove(innerList.size()-1);
                 endringer++;
                 return true;
             }
@@ -268,14 +269,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             finnNode(indeks).forrige=finnNode(indeks-1);
         }
         antall--;
+        innerList.remove(innerList.size()-1);
         endringer++;
         return mellomLagring;
     }
 
     @Override
     public void nullstill() {
-        // Fjernet fordi oppgave 8 ikke passerer uten å fikse den for meg
-        //throw new UnsupportedOperationException();
+        this.hode = null;
+        this.hale = null;
+        antall = 0;
+        innerList.clear();
+        endringer++;
     }
 
     @Override
