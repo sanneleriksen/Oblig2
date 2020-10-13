@@ -224,25 +224,44 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         return gammelVerdi;
     }
 
+    private void fjernNode(Node<T> node){
+        if(antall == 0) throw new NullPointerException();
+        if(antall == 1) {
+            hode = null;
+            hale = null;
+        }else if(node.forrige == null){//hode
+            node.neste.forrige = null;
+            hode= node.neste;
+        }
+        else if(node.neste == null){//hale
+            node.forrige.neste = null;
+            hale = node.forrige;
+        }else{
+            node.forrige.neste = node.neste;
+            node.neste.forrige = node.forrige;
+        }
+
+        antall--;
+        innerList.remove(innerList.size()-1);
+        endringer++;
+    }
+
     @Override
     public boolean fjern(T verdi) {
+        if(verdi == null){
+            return false;
+        }
         Node<T> forrigeNode = null;
         Node<T> node = hode;
 
-        while(node.neste!=null){
-            forrigeNode = node;
-            node = node.neste;
-            if(verdi == null){
-                return false;
-            }
-            if(node.verdi.equals(verdi)){
-                forrigeNode.neste = node.neste;
-                node.forrige = forrigeNode;
-                antall--;
-                innerList.remove(innerList.size()-1);
-                endringer++;
+        while(node != null) {
+            if (node.verdi.equals(verdi)) {
+                fjernNode(node);
                 return true;
             }
+
+            node = node.neste;
+
         }
         return false;
     }
@@ -252,26 +271,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(indeks>=antall || indeks<0){
             throw new IndexOutOfBoundsException("indeks er ugyldig");
         }
-        T mellomLagring = hent(indeks);
-        if (indeks == 0){
-            hode=finnNode(1);
-            hode.neste=finnNode(1);
-            finnNode(0).neste = null;
-            finnNode(0).forrige = null;
-        }
-        else if(indeks == antall-1){
-            finnNode(indeks-1).neste=null;
-            finnNode(indeks).forrige=null;
-            hale = finnNode(antall-1);
-        }
-        else{
-            finnNode(indeks-1).neste=finnNode(indeks+1);
-            finnNode(indeks).forrige=finnNode(indeks-1);
-        }
-        antall--;
-        innerList.remove(innerList.size()-1);
-        endringer++;
-        return mellomLagring;
+        Node<T>slettNode = finnNode(indeks);
+        T verdi= slettNode.verdi;
+        fjernNode(slettNode);
+        return verdi;
     }
 
     @Override
